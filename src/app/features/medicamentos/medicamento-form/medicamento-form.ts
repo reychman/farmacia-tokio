@@ -7,4 +7,4 @@ import { Component } from '@angular/core';
   templateUrl: './medicamento-form.html',
   styleUrl: './medicamento-form.css',
 })
-export class MedicamentoForm {}
+export class MedicamentoFormComponent {}

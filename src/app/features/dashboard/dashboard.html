@@ -1,1 +1,96 @@
-<p>dashboard works!</p>
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card border-primary">
+            <div class="card-body text-center">
+                <div class="fs-1">💊</div>
+                <h5 class="card-title">Medicamentos</h5>
+                <p class="card-text display-6 fw-bold text-primary">{{ totalMedicamentos }}</p>
+                <small class="text-muted">en inventario</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-success">
+            <div class="card-body text-center">
+                <div class="fs-1">🛒</div>
+                <h5 class="card-title">Ventas Hoy</h5>
+                <p class="card-text display-6 fw-bold text-success">{{ ventasHoy }}</p>
+                <small class="text-muted">transacciones</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-warning">
+            <div class="card-body text-center">
+                <div class="fs-1">⚠️</div>
+                <h5 class="card-title">Stock Bajo</h5>
+                <p class="card-text display-6 fw-bold text-warning">{{ stockBajo }}</p>
+                <small class="text-muted">necesitan reposición</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-info">
+            <div class="card-body text-center">
+                <div class="fs-1">💰</div>
+                <h5 class="card-title">Total Hoy</h5>
+                <p class="card-text display-6 fw-bold text-info">Bs. {{ totalHoy }}</p>
+                <small class="text-muted">en ventas</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header bg-warning text-dark fw-bold">⚠️ Medicamentos con Stock Bajo</div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                @if (medicamentosBajoStock.length === 0) {
+                    <li class="list-group-item text-muted text-center py-3">
+                    Todo el stock está en niveles normales ✅
+                    </li>
+                }
+                @for (med of medicamentosBajoStock; track med.id) {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>{{ med.nombre }}</span>
+                    <span class="badge bg-danger rounded-pill">{{ med.stock }} unid.</span>
+                    </li>
+                }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card h-100">
+        <div class="card-header bg-success text-white fw-bold">🛒 Últimas Ventas</div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                @if (ultimasVentas.length === 0) {
+                    <li class="list-group-item text-muted text-center py-3">
+                    No hay ventas registradas hoy
+                    </li>
+                }
+                @for (venta of ultimasVentas; track venta.id) {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="fw-bold">#{{ venta.id }}</span>
+                        <small class="text-muted ms-2">{{ venta.fecha | date: 'HH:mm' }}</small>
+                    </div>
+                    <span class="text-success fw-bold">Bs. {{ venta.total }}</span>
+                    </li>
+                }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-12 d-flex gap-2">
+        <a routerLink="/medicamentos/nuevo" class="btn btn-primary"> + Agregar Medicamento </a>
+        <a routerLink="/ventas/nueva" class="btn btn-success"> + Nueva Venta </a>
+    </div>
+</div>
