@@ -1,1 +1,66 @@
-<p>medicamento-form works!</p>
+<div class="card mx-auto" style="max-width: 600px;">
+    <div class="card-header bg-primary text-white fw-bold">
+        {{ esEdicion ? '✏️ Editar Medicamento' : '+ Nuevo Medicamento' }}
+    </div>
+    <div class="card-body">
+        <form (ngSubmit)="guardar()">
+        <div class="mb-3">
+            <label class="form-label fw-bold">Nombre del medicamento *</label>
+            <input type="text" class="form-control"
+                [(ngModel)]="medicamento.nombre"
+                name="nombre" required
+                placeholder="Ej: Paracetamol 500mg">
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+            <label class="form-label fw-bold">Categoría *</label>
+            <select class="form-select" [(ngModel)]="medicamento.categoria" name="categoria" required>
+                <option value="">Seleccionar...</option>
+                <option>Analgésico</option>
+                <option>Antibiótico</option>
+                <option>Antiinflamatorio</option>
+                <option>Antihistamínico</option>
+                <option>Gastroprotector</option>
+                <option>Vitaminas</option>
+                <option>Otro</option>
+            </select>
+            </div>
+            <div class="col-md-6">
+            <label class="form-label fw-bold">Precio (Bs.) *</label>
+            <input type="number" class="form-control"
+                    [(ngModel)]="medicamento.precio"
+                    name="precio" required min="0" step="0.50"
+                    placeholder="0.00">
+            </div>
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+            <label class="form-label fw-bold">Stock inicial *</label>
+            <input type="number" class="form-control"
+                    [(ngModel)]="medicamento.stock"
+                    name="stock" required min="0"
+                    placeholder="0">
+            </div>
+            <div class="col-md-6">
+            <label class="form-label fw-bold">Fecha de vencimiento *</label>
+            <input type="date" class="form-control"
+                    [(ngModel)]="medicamento.vencimiento"
+                    name="vencimiento" required>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-bold">Descripción</label>
+            <textarea class="form-control" rows="2"
+                    [(ngModel)]="medicamento.descripcion"
+                    name="descripcion"
+                    placeholder="Indicaciones o notas..."></textarea>
+        </div>
+        <div class="d-flex gap-2 justify-content-end">
+            <a routerLink="/medicamentos" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-primary">
+            {{ esEdicion ? 'Actualizar' : 'Guardar' }}
+            </button>
+        </div>
+        </form>
+    </div>
+</div>

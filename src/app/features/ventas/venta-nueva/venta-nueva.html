@@ -1,1 +1,89 @@
-<p>venta-nueva works!</p>
+<div class="row g-3">
+    <!-- PANEL IZQUIERDO: buscar medicamentos -->
+    <div class="col-md-5">
+        <div class="card">
+        <div class="card-header bg-primary text-white fw-bold">
+            💊 Buscar Medicamento
+        </div>
+        <div class="card-body">
+            <input type="text" class="form-control mb-3"
+                placeholder="🔍 Buscar por nombre..."
+                [(ngModel)]="busqueda"
+                (input)="filtrar()">
+
+            <div class="list-group" style="max-height:400px; overflow-y:auto">
+            @for (med of medicamentosFiltrados; track med.id) {
+                <button class="list-group-item list-group-item-action"
+                        (click)="agregarAlCarrito(med)">
+                <div class="d-flex justify-content-between">
+                    <span class="fw-bold">{{ med.nombre }}</span>
+                    <span class="text-success">Bs. {{ med.precio }}</span>
+                </div>
+                <small class="text-muted">Stock disponible: {{ med.stock }}</small>
+                </button>
+            }
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- PANEL DERECHO: carrito -->
+    <div class="col-md-7">
+        <div class="card">
+        <div class="card-header bg-success text-white fw-bold">
+            🛒 Carrito de Venta
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-sm mb-0">
+            <thead class="table-light">
+                <tr>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Cant.</th>
+                <th>Subtotal</th>
+                <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (carrito.length === 0) {
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-3">
+                    Agrega medicamentos desde la izquierda
+                    </td>
+                </tr>
+                }
+                @for (item of carrito; track item.id) {
+                <tr>
+                    <td>{{ item.nombre }}</td>
+                    <td>Bs. {{ item.precio }}</td>
+                    <td>
+                    <input type="number" class="form-control form-control-sm"
+                            style="width:65px"
+                            [(ngModel)]="item.cantidad"
+                            (change)="recalcular()"
+                            min="1" [max]="item.stockMax">
+                    </td>
+                    <td class="fw-bold">Bs. {{ item.precio * item.cantidad }}</td>
+                    <td>
+                    <button class="btn btn-sm btn-outline-danger"
+                            (click)="quitarDelCarrito(item.id)">✕</button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fs-5 fw-bold">Total:</span>
+            <span class="fs-4 fw-bold text-success">Bs. {{ total }}</span>
+            </div>
+            <button class="btn btn-success w-100"
+                    [disabled]="carrito.length === 0"
+                    (click)="confirmarVenta()">
+            ✅ Confirmar Venta
+            </button>
+        </div>
+        </div>
+    </div>
+</div>

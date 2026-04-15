@@ -1,1 +1,57 @@
-<p>medicamento-list works!</p>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">💊 Medicamentos</h4>
+    <a routerLink="/medicamentos/nuevo" class="btn btn-primary btn-sm">
+        + Agregar Medicamento
+    </a>
+</div>
+
+<div class="mb-3">
+    <input type="text" class="form-control" placeholder="🔍 Buscar medicamento por nombre..." [(ngModel)]="busqueda" (input)="filtrar()">
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover table-bordered align-middle">
+        <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Precio (Bs.)</th>
+            <th>Stock</th>
+            <th>Vencimiento</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        @if (medicamentosFiltrados.length === 0) {
+            <tr>
+            <td colspan="7" class="text-center text-muted py-4">
+                No se encontraron medicamentos
+            </td>
+            </tr>
+        }
+        @for (med of medicamentosFiltrados; track med.id) {
+            <tr>
+            <td>{{ med.id }}</td>
+            <td class="fw-bold">{{ med.nombre }}</td>
+            <td><span class="badge bg-secondary">{{ med.categoria }}</span></td>
+            <td>Bs. {{ med.precio }}</td>
+            <td>
+                <span class="badge" [ngClass]="med.stock <= 5 ? 'bg-danger' : 'bg-success'">
+                {{ med.stock }}
+                </span>
+            </td>
+            <td>{{ med.vencimiento | date:'dd/MM/yyyy' }}</td>
+            <td>
+                <div class="d-flex gap-1">
+                <a [routerLink]="['/medicamentos/editar', med.id]"
+                    class="btn btn-sm btn-outline-primary">✏️</a>
+                <button class="btn btn-sm btn-outline-danger"
+                        (click)="eliminar(med.id)">🗑️</button>
+                </div>
+            </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
