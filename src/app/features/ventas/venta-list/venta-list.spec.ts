@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { VentaList } from './venta-list';
+import { VentaListComponent } from './venta-list';
 
-describe('VentaList', () => {
-  let component: VentaList;
-  let fixture: ComponentFixture<VentaList>;
+describe('VentaListComponent', () => {
+  let component: VentaListComponent;
+  let fixture: ComponentFixture<VentaListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [VentaList],
+      imports: [VentaListComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(VentaList);
+    fixture = TestBed.createComponent(VentaListComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
