@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IndexeddbService } from './indexeddb';
+import { Indexeddb } from './indexeddb';
 
 export interface Venta {
   id?: number;
@@ -28,7 +28,7 @@ export interface ItemCarrito {
 
 @Injectable({ providedIn: 'root' })
 export class VentaService {
-  constructor(private idb: IndexeddbService) {}
+  constructor(private idb: Indexeddb) {}
 
   registrar(
     venta: Venta,

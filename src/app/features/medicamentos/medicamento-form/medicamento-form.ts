@@ -54,8 +54,4 @@ export class MedicamentoFormComponent implements OnInit {
   cancelar() {
     this.router.navigate(['/medicamentos']);
   }
-
-  cancelar() {
-    this.cancelado.emit();
-  }
 }

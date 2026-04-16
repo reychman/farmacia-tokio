@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
-import { IndexeddbService } from './core/services/indexeddb';
+import { Indexeddb } from './core/services/indexeddb';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +9,7 @@ import { IndexeddbService } from './core/services/indexeddb';
   templateUrl: './app.html',
 })
 export class AppComponent implements OnInit {
-  constructor(private idb: IndexeddbService) {}
+  constructor(private idb: Indexeddb) {}
 
   ngOnInit(): void {
     this.idb.initDB().then(() => {

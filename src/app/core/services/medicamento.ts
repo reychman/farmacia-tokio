@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IndexeddbService } from './indexeddb';
+import { Indexeddb } from './indexeddb';
 
 export interface Medicamento {
   id?: number;
@@ -16,7 +16,7 @@ export interface Medicamento {
 export class MedicamentoService {
   private readonly STORE = 'medicamentos';
 
-  constructor(private idb: IndexeddbService) {}
+  constructor(private idb: Indexeddb) {}
 
   agregar(med: Medicamento): Promise<number> {
     return this.idb.add(this.STORE, med);

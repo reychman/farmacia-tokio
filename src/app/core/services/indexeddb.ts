@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
-export class IndexeddbService {
+export class Indexeddb {
   private db!: IDBDatabase;
   private readonly DB_NAME = 'farmaciaTokenDB';
   private readonly DB_VERSION = 1;
