@@ -79,20 +79,24 @@
                 <i class="bi bi-receipt me-1 text-info"></i>Ventas registradas
             </div>
             <div class="card-body p-0">
-                <div *ngIf="ventasRecientes.length === 0" class="p-3 text-muted text-center">
+                @if (ventasRecientes.length === 0) {
+                    <div class="p-3 text-muted text-center">
                     <i class="bi bi-receipt-x text-muted fs-4 d-block mb-1"></i>
                     No hay ventas registradas
-                </div>
-                <ul class="list-group list-group-flush" *ngIf="ventasRecientes.length > 0">
-                    <li class="list-group-item d-flex justify-content-between align-items-center"
-                        *ngFor="let v of ventasRecientes">
+                    </div>
+                } @else {
+                    <ul class="list-group list-group-flush">
+                    @for (v of ventasRecientes; track v.id) {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
                         <div>
                             <small class="text-muted d-block">{{ v.fecha | date:'dd/MM/yyyy HH:mm' }}</small>
                             <span class="fw-semibold">Bs. {{ v.total.toFixed(2) }}</span>
                         </div>
                         <span class="badge bg-success">{{ v.metodoPago }}</span>
-                    </li>
-                </ul>
+                        </li>
+                    }
+                    </ul>
+                }
             </div>
         </div>
     </div>
@@ -105,17 +109,21 @@
                 <i class="bi bi-exclamation-triangle me-1 text-danger"></i>Stock bajo (≤ 5 unidades)
             </div>
             <div class="card-body p-0">
-                <div *ngIf="stockBajo.length === 0" class="p-3 text-muted text-center">
+                @if (stockBajo.length === 0) {
+                    <div class="p-3 text-muted text-center">
                     <i class="bi bi-check-circle text-success fs-4 d-block mb-1"></i>
                     Todo el stock está en niveles normales
-                </div>
-                <ul class="list-group list-group-flush" *ngIf="stockBajo.length > 0">
-                    <li class="list-group-item d-flex justify-content-between align-items-center"
-                        *ngFor="let m of stockBajo">
+                    </div>
+                } @else {
+                    <ul class="list-group list-group-flush">
+                    @for (m of stockBajo; track m.id) {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span><i class="bi bi-capsule me-2 text-muted"></i>{{ m.nombre }}</span>
                         <span class="badge bg-danger rounded-pill">{{ m.stock }} {{ m.unidad }}</span>
-                    </li>
-                </ul>
+                        </li>
+                    }
+                    </ul>
+                }
             </div>
         </div>
     </div>
