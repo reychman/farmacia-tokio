@@ -23,7 +23,7 @@ export class Indexeddb {
           meds.createIndex('laboratorio', 'laboratorio', { unique: false });
         }
 
-        // --- Object Store: ventas ---
+
         if (!db.objectStoreNames.contains('ventas')) {
           db.createObjectStore('ventas', {
             keyPath: 'id',
@@ -31,7 +31,7 @@ export class Indexeddb {
           });
         }
 
-        // --- Object Store: detalleVentas ---
+
         if (!db.objectStoreNames.contains('detalleVentas')) {
           const det = db.createObjectStore('detalleVentas', {
             keyPath: 'id',
@@ -55,7 +55,7 @@ export class Indexeddb {
     return this.initDB();
   }
 
-  // ---------- MÉTODOS GENÉRICOS ----------
+
 
   add(store: string, data: any): Promise<number> {
     return new Promise(async (resolve, reject) => {
@@ -118,7 +118,7 @@ export class Indexeddb {
     });
   }
 
-  // ---------- MÉTODO ESPECIAL: guardar venta completa (transacción atómica) ----------
+
 
   guardarVentaCompleta(
     venta: { fecha: string; total: number; metodoPago: string; observacion: string },
