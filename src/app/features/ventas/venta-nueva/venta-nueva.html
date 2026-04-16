@@ -1,89 +1,113 @@
-<div class="row g-3">
-    <!-- PANEL IZQUIERDO: buscar medicamentos -->
-    <div class="col-md-5">
-        <div class="card">
-        <div class="card-header bg-primary text-white fw-bold">
-            💊 Buscar Medicamento
+<div class="row mb-3">
+    <div class="col">
+        <h2 class="fw-bold text-success mb-0">
+        <i class="bi bi-cart-plus me-2"></i>Nueva Venta
+        </h2>
+        <p class="text-muted">Busca medicamentos y agrégalos al carrito</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Panel izquierdo: buscador de medicamentos -->
+    <div class="col-md-6">
+        <div class="card h-100">
+        <div class="card-header bg-transparent fw-semibold">
+            <i class="bi bi-search me-1"></i>Buscar medicamento
         </div>
         <div class="card-body">
             <input type="text" class="form-control mb-3"
-                placeholder="🔍 Buscar por nombre..."
-                [(ngModel)]="busqueda"
-                (input)="filtrar()">
+            placeholder="Escribe el nombre..."
+            [(ngModel)]="busqueda">
 
-            <div class="list-group" style="max-height:400px; overflow-y:auto">
-            @for (med of medicamentosFiltrados; track med.id) {
-                <button class="list-group-item list-group-item-action"
-                        (click)="agregarAlCarrito(med)">
-                <div class="d-flex justify-content-between">
-                    <span class="fw-bold">{{ med.nombre }}</span>
-                    <span class="text-success">Bs. {{ med.precio }}</span>
+            <div class="list-group" style="max-height: 400px; overflow-y: auto;">
+            <button type="button"
+                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                *ngFor="let m of medicamentosFiltrados"
+                [disabled]="m.stock === 0"
+                (click)="agregarAlCarrito(m)">
+                <div>
+                <div class="fw-semibold">{{ m.nombre }}</div>
+                <small class="text-muted">{{ m.laboratorio }} · {{ m.unidad }}</small>
                 </div>
-                <small class="text-muted">Stock disponible: {{ med.stock }}</small>
-                </button>
-            }
+                <div class="text-end">
+                <div class="text-success fw-bold">Bs. {{ m.precio.toFixed(2) }}</div>
+                <small [class.text-danger]="m.stock <= 5" [class.text-muted]="m.stock > 5">
+                    Stock: {{ m.stock }}
+                </small>
+                </div>
+            </button>
+            <div *ngIf="medicamentosFiltrados.length === 0" class="text-center text-muted py-3">
+                <i class="bi bi-search d-block fs-4 mb-1"></i>Sin resultados
+            </div>
             </div>
         </div>
         </div>
     </div>
 
-    <!-- PANEL DERECHO: carrito -->
-    <div class="col-md-7">
-        <div class="card">
-        <div class="card-header bg-success text-white fw-bold">
-            🛒 Carrito de Venta
+    <!-- Panel derecho: carrito -->
+    <div class="col-md-6">
+        <div class="card h-100">
+        <div class="card-header bg-transparent fw-semibold d-flex justify-content-between">
+            <span><i class="bi bi-cart3 me-1"></i>Carrito</span>
+            <span class="badge bg-primary rounded-pill">{{ carrito.length }} items</span>
         </div>
         <div class="card-body p-0">
-            <table class="table table-sm mb-0">
-            <thead class="table-light">
-                <tr>
-                <th>Producto</th>
-                <th>Precio</th>
-                <th>Cant.</th>
-                <th>Subtotal</th>
-                <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (carrito.length === 0) {
-                <tr>
-                    <td colspan="5" class="text-center text-muted py-3">
-                    Agrega medicamentos desde la izquierda
-                    </td>
-                </tr>
-                }
-                @for (item of carrito; track item.id) {
-                <tr>
-                    <td>{{ item.nombre }}</td>
-                    <td>Bs. {{ item.precio }}</td>
-                    <td>
-                    <input type="number" class="form-control form-control-sm"
-                            style="width:65px"
-                            [(ngModel)]="item.cantidad"
-                            (change)="recalcular()"
-                            min="1" [max]="item.stockMax">
-                    </td>
-                    <td class="fw-bold">Bs. {{ item.precio * item.cantidad }}</td>
-                    <td>
-                    <button class="btn btn-sm btn-outline-danger"
-                            (click)="quitarDelCarrito(item.id)">✕</button>
-                    </td>
-                </tr>
-                }
-            </tbody>
-            </table>
-        </div>
-        <div class="card-footer">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="fs-5 fw-bold">Total:</span>
-            <span class="fs-4 fw-bold text-success">Bs. {{ total }}</span>
+
+            <div *ngIf="carrito.length === 0" class="text-center text-muted py-5">
+            <i class="bi bi-cart d-block fs-2 mb-2"></i>
+            Carrito vacío
             </div>
-            <button class="btn btn-success w-100"
-                    [disabled]="carrito.length === 0"
-                    (click)="confirmarVenta()">
-            ✅ Confirmar Venta
+
+            <ul class="list-group list-group-flush">
+            <li class="list-group-item" *ngFor="let item of carrito; let i = index">
+                <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="fw-semibold">{{ item.nombreMedicamento }}</div>
+                    <small class="text-muted">Bs. {{ item.precioUnitario.toFixed(2) }} c/u</small>
+                </div>
+                <button class="btn btn-sm btn-outline-danger" (click)="quitarDelCarrito(i)">
+                    <i class="bi bi-x"></i>
+                </button>
+                </div>
+                <div class="d-flex align-items-center gap-2 mt-2">
+                <button class="btn btn-sm btn-outline-secondary" (click)="cambiarCantidad(item, -1)">-</button>
+                <span class="fw-bold px-2">{{ item.cantidad }}</span>
+                <button class="btn btn-sm btn-outline-secondary" (click)="cambiarCantidad(item, 1)">+</button>
+                <span class="ms-auto text-success fw-bold">
+                    Bs. {{ (item.cantidad * item.precioUnitario).toFixed(2) }}
+                </span>
+                </div>
+            </li>
+            </ul>
+        </div>
+
+        <div class="card-footer" *ngIf="carrito.length > 0">
+            <div class="d-flex justify-content-between fw-bold fs-5 mb-3">
+            <span>Total:</span>
+            <span class="text-success">Bs. {{ total.toFixed(2) }}</span>
+            </div>
+
+            <div class="mb-2">
+            <label class="form-label fw-semibold">Método de pago</label>
+            <select class="form-select" [(ngModel)]="metodoPago">
+                <option value="efectivo">Efectivo</option>
+                <option value="qr">QR</option>
+                <option value="transferencia">Transferencia</option>
+            </select>
+            </div>
+
+            <div class="mb-3">
+            <label class="form-label fw-semibold">Observación</label>
+            <input type="text" class="form-control" [(ngModel)]="observacion"
+                placeholder="Opcional...">
+            </div>
+
+            <button class="btn btn-success w-100" (click)="confirmarVenta()" [disabled]="guardando">
+            <i class="bi bi-check-circle me-1"></i>
+            {{ guardando ? 'Guardando...' : 'Confirmar Venta' }}
             </button>
         </div>
         </div>
     </div>
+
 </div>

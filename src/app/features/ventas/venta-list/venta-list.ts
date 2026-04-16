@@ -1,22 +1,30 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { VentaService, Venta } from '../../../core/services/venta';
 
 @Component({
   selector: 'app-venta-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, DatePipe],
+  imports: [CommonModule, RouterLink],
   templateUrl: './venta-list.html',
-  styleUrl: './venta-list.css'
 })
 export class VentaListComponent implements OnInit {
-  ventas: any[] = [];
+  ventas: Venta[] = [];
 
-  ngOnInit() {
-    this.ventas = [
-      { id: 'V001', fecha: new Date(), items: [{}, {}], total: 85 },
-      { id: 'V002', fecha: new Date(), items: [{}], total: 120 },
-      { id: 'V003', fecha: new Date(), items: [{}, {}, {}], total: 45 },
-    ];
+  constructor(private ventaService: VentaService) {}
+
+  async ngOnInit() {
+    this.ventas = (await this.ventaService.listar()).reverse();
+  }
+
+  async eliminar(id: number) {
+    if (!confirm('¿Anular esta venta? El stock NO se restaurará automáticamente.')) return;
+    await this.ventaService.eliminar(id);
+    this.ventas = (await this.ventaService.listar()).reverse();
+  }
+
+  formatFecha(iso: string) {
+    return new Date(iso).toLocaleString('es-BO');
   }
 }

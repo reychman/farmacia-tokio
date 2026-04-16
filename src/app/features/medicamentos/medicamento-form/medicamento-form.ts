@@ -1,39 +1,61 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, ActivatedRoute, Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { MedicamentoService, Medicamento } from '../../../core/services/medicamento';
 
 @Component({
   selector: 'app-medicamento-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './medicamento-form.html',
-  styleUrl: './medicamento-form.css'
 })
 export class MedicamentoFormComponent implements OnInit {
-  esEdicion = false;
-  medicamento = {
-    nombre: '', categoria: '', precio: 0,
-    stock: 0, vencimiento: '', descripcion: ''
+  form: Medicamento = {
+    nombre: '',
+    laboratorio: '',
+    precio: 0,
+    stock: 0,
+    unidad: 'caja',
+    descripcion: '',
+    fechaVencimiento: '',
   };
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  esEdicion = false;
 
-  ngOnInit() {
+  constructor(
+    private medService: MedicamentoService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
+
+  async ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.esEdicion = true;
-      // Aquí cargarás desde IndexedDB por id
+      const med = await this.medService.obtener(parseInt(id));
+      this.form = { ...med };
     }
   }
 
-  guardar() {
-    if (!this.medicamento.nombre || !this.medicamento.precio) {
-      alert('Completa los campos obligatorios');
+  async guardar() {
+    if (!this.form.nombre || !this.form.laboratorio) {
+      alert('Nombre y laboratorio son obligatorios');
       return;
     }
-    // Aquí guardarás en IndexedDB
-    alert(this.esEdicion ? 'Medicamento actualizado' : 'Medicamento guardado');
+    if (this.esEdicion) {
+      await this.medService.actualizar(this.form);
+    } else {
+      await this.medService.agregar(this.form);
+    }
     this.router.navigate(['/medicamentos']);
+  }
+
+  cancelar() {
+    this.router.navigate(['/medicamentos']);
+  }
+
+  cancelar() {
+    this.cancelado.emit();
   }
 }

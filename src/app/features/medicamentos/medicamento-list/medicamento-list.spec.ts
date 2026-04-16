@@ -4,7 +4,7 @@ import { MedicamentoListComponent } from './medicamento-list';
 
 describe('MedicamentoListComponent', () => {
   let component: MedicamentoListComponent;
-  let fixture: ComponentFixture<MedicamentoListComponent  >;
+  let fixture: ComponentFixture<MedicamentoListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

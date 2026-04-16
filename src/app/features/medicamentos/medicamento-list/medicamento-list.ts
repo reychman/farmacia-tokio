@@ -1,42 +1,63 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { MedicamentoService, Medicamento } from '../../../core/services/medicamento';
 
 @Component({
   selector: 'app-medicamento-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, DatePipe],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './medicamento-list.html',
-  styleUrl: './medicamento-list.css'
 })
 export class MedicamentoListComponent implements OnInit {
+  medicamentos: Medicamento[] = [];
+  medicamentoSeleccionado: Medicamento | null = null;
+  mostrarFormulario = false;
   busqueda = '';
-  medicamentos: any[] = [];
-  medicamentosFiltrados: any[] = [];
 
-  ngOnInit() {
-    // Datos de prueba — luego conectas con IndexedDB
-    this.medicamentos = [
-      { id: 1, nombre: 'Paracetamol 500mg', categoria: 'Analgésico', precio: 5, stock: 2, vencimiento: new Date('2025-12-01') },
-      { id: 2, nombre: 'Ibuprofeno 400mg', categoria: 'Antiinflamatorio', precio: 8, stock: 15, vencimiento: new Date('2026-06-01') },
-      { id: 3, nombre: 'Amoxicilina 500mg', categoria: 'Antibiótico', precio: 12, stock: 4, vencimiento: new Date('2025-08-01') },
-      { id: 4, nombre: 'Omeprazol 20mg', categoria: 'Gastroprotector', precio: 7, stock: 20, vencimiento: new Date('2026-03-01') },
-    ];
-    this.medicamentosFiltrados = [...this.medicamentos];
+  constructor(private medService: MedicamentoService) {}
+
+  async ngOnInit() {
+    await this.cargar();
   }
 
-  filtrar() {
-    const texto = this.busqueda.toLowerCase();
-    this.medicamentosFiltrados = this.medicamentos.filter(m =>
-      m.nombre.toLowerCase().includes(texto)
+  async cargar() {
+    this.medicamentos = await this.medService.listar();
+  }
+
+  get medicamentosFiltrados() {
+    if (!this.busqueda.trim()) return this.medicamentos;
+    const q = this.busqueda.toLowerCase();
+    return this.medicamentos.filter(
+      m => m.nombre.toLowerCase().includes(q) || m.laboratorio.toLowerCase().includes(q)
     );
   }
 
-  eliminar(id: number) {
-    if (confirm('¿Eliminar este medicamento?')) {
-      this.medicamentos = this.medicamentos.filter(m => m.id !== id);
-      this.filtrar();
-    }
+  nuevo() {
+    this.medicamentoSeleccionado = null;
+    this.mostrarFormulario = true;
+  }
+
+  editar(med: Medicamento) {
+    this.medicamentoSeleccionado = { ...med };
+    this.mostrarFormulario = true;
+  }
+
+  async eliminar(id: number | undefined) {
+    if (!id || !confirm('¿Eliminar este medicamento?')) return;
+    await this.medService.eliminar(id);
+    await this.cargar();
+  }
+
+  async onGuardado() {
+    this.mostrarFormulario = false;
+    this.medicamentoSeleccionado = null;
+    await this.cargar();
+  }
+
+  cancelar() {
+    this.mostrarFormulario = false;
+    this.medicamentoSeleccionado = null;
   }
 }
