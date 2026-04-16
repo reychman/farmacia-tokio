@@ -21,37 +21,42 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let v of ventas; let i = index">
-            <td class="text-muted">{{ v.id }}</td>
-            <td>{{ formatFecha(v.fecha) }}</td>
-            <td class="fw-bold text-success">Bs. {{ v.total.toFixed(2) }}</td>
-            <td>
-                <span class="badge"
-                [class.bg-success]="v.metodoPago === 'efectivo'"
-                [class.bg-info]="v.metodoPago === 'qr'"
-                [class.bg-primary]="v.metodoPago === 'transferencia'">
-                <i class="bi bi-cash me-1" *ngIf="v.metodoPago === 'efectivo'"></i>
-                <i class="bi bi-qr-code me-1" *ngIf="v.metodoPago === 'qr'"></i>
-                <i class="bi bi-bank me-1" *ngIf="v.metodoPago === 'transferencia'"></i>
-                {{ v.metodoPago }}
-                </span>
-            </td>
-            <td class="text-muted">{{ v.observacion || '—' }}</td>
-            <td>
-                <a [routerLink]="['/ventas/detalle', v.id]" class="btn btn-sm btn-outline-primary me-1">
-                <i class="bi bi-eye"></i>
-                </a>
-                <button class="btn btn-sm btn-outline-danger" (click)="eliminar(v.id!)">
-                <i class="bi bi-trash"></i>
-                </button>
-            </td>
-            </tr>
-            <tr *ngIf="ventas.length === 0">
-            <td colspan="6" class="text-center text-muted py-4">
-                <i class="bi bi-inbox fs-3 d-block mb-2"></i>
-                No hay ventas registradas
-            </td>
-            </tr>
+            @if (ventas.length === 0) {
+                <tr>
+                <td colspan="6" class="text-center text-muted py-4">
+                    <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                    No hay ventas registradas
+                </td>
+                </tr>
+            } @else {
+                @for (v of ventas; track v.id) {
+                    <tr>
+                    <td class="text-muted">{{ v.id }}</td>
+                    <td>{{ formatFecha(v.fecha) }}</td>
+                    <td class="fw-bold text-success">Bs. {{ v.total.toFixed(2) }}</td>
+                    <td>
+                        <span class="badge"
+                        [class.bg-success]="v.metodoPago === 'efectivo'"
+                        [class.bg-info]="v.metodoPago === 'qr'"
+                        [class.bg-primary]="v.metodoPago === 'transferencia'">
+                        <i class="bi bi-cash me-1" *ngIf="v.metodoPago === 'efectivo'"></i>
+                        <i class="bi bi-qr-code me-1" *ngIf="v.metodoPago === 'qr'"></i>
+                        <i class="bi bi-bank me-1" *ngIf="v.metodoPago === 'transferencia'"></i>
+                        {{ v.metodoPago }}
+                        </span>
+                    </td>
+                    <td class="text-muted">{{ v.observacion || '—' }}</td>
+                    <td>
+                        <a [routerLink]="['/ventas/detalle', v.id]" class="btn btn-sm btn-outline-primary me-1">
+                        <i class="bi bi-eye"></i>
+                        </a>
+                        <button class="btn btn-sm btn-outline-danger" (click)="eliminar(v.id!)">
+                        <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                    </tr>
+                }
+            }
         </tbody>
         </table>
     </div>

@@ -45,8 +45,9 @@ export class VentaService {
     return this.idb.getById('ventas', id);
   }
 
-  obtenerDetalle(ventaId: number): Promise<DetalleVenta[]> {
-    return this.idb.getByIndex('detalleVentas', 'ventaId', ventaId);
+  async obtenerDetalle(ventaId: number): Promise<DetalleVenta[]> {
+    const detalles = await this.idb.getAll('detalleVentas');
+    return detalles.filter((detalle: DetalleVenta) => detalle.ventaId === ventaId);
   }
 
   eliminar(id: number): Promise<void> {

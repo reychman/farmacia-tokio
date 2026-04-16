@@ -1,4 +1,10 @@
-<div class="card border-primary">
+@if (mostrarMensaje) {
+    <div class="alert" [ngClass]="tipomensaje === 'success' ? 'alert-success' : 'alert-danger'" role="alert">
+        {{ mensajeTexto }}
+    </div>
+}
+
+<div class="card border-primary mt-3">
     <div class="card-header bg-primary text-white fw-semibold">
         <i class="bi bi-capsule me-2"></i>
         {{ esEdicion ? 'Editar Medicamento' : 'Nuevo Medicamento' }}

@@ -22,6 +22,9 @@ export class MedicamentoFormComponent implements OnInit {
   };
 
   esEdicion = false;
+  mostrarMensaje = false;
+  mensajeTexto = '';
+  tipomensaje: 'success' | 'error' = 'success';
 
   constructor(
     private medService: MedicamentoService,
@@ -48,17 +51,47 @@ export class MedicamentoFormComponent implements OnInit {
 
   async guardar() {
     if (!this.form.nombre || !this.form.laboratorio) {
-      alert('Nombre y laboratorio son obligatorios');
+      this.mostrarMensaje = true;
+      this.mensajeTexto = 'Nombre y laboratorio son obligatorios';
+      this.tipomensaje = 'error';
+      this.cdr.detectChanges();
+      setTimeout(() => {
+        this.mostrarMensaje = false;
+        this.cdr.detectChanges();
+      }, 3000);
       return;
     }
-    if (this.esEdicion) {
-      await this.medService.actualizar(this.form);
-      console.log('✅ Medicamento actualizado:', this.form);
-    } else {
-      await this.medService.agregar(this.form);
-      console.log('✅ Medicamento agregado:', this.form);
+    
+    try {
+      if (this.esEdicion) {
+        await this.medService.actualizar(this.form);
+        this.mensajeTexto = '✅ Medicamento actualizado correctamente';
+        console.log('✅ Medicamento actualizado:', this.form);
+      } else {
+        await this.medService.agregar(this.form);
+        this.mensajeTexto = '✅ Medicamento guardado correctamente';
+        console.log('✅ Medicamento agregado:', this.form);
+      }
+      this.tipomensaje = 'success';
+      this.mostrarMensaje = true;
+      this.cdr.detectChanges();
+      
+      // Redirigir después de 3 segundos
+      setTimeout(() => {
+        this.router.navigate(['/medicamentos']);
+      }, 3000);
+    } catch (error) {
+      this.mensajeTexto = '❌ Error al guardar el medicamento';
+      this.tipomensaje = 'error';
+      this.mostrarMensaje = true;
+      console.error('Error:', error);
+      this.cdr.detectChanges();
+      
+      setTimeout(() => {
+        this.mostrarMensaje = false;
+        this.cdr.detectChanges();
+      }, 3000);
     }
-    this.router.navigate(['/medicamentos']);
   }
 
   cancelar() {
